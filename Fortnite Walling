@@ -1,0 +1,71 @@
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+#include "vex.h"
+
+using namespace vex;
+
+// A global instance of vex::brain used for printing to the V5 brain screen
+vex::brain       Brain;
+
+// define your global instances of motors and other devices here
+vex::motor LeftMotor = vex::motor(vex::PORT1, vex::gearSetting::ratio18_1,true);
+vex::motor RightMotor = vex::motor(vex::PORT10, vex::gearSetting::ratio18_1,true);
+vex::motor ArmMotor = vex::motor(vex::PORT8, vex::gearSetting::ratio18_1,true);
+vex::controller Controller1 = vex::controller(controllerType::primary);
+vex::controller Controller2 = vex::controller(controllerType::partner);
+
+double wheelDiameterCM  = 10.16; 
+double circumference = wheelDiameterCM * 3.141592; 
+static int RIGHT_ANGLE = 54;
+void moveForward(int how_long)
+  {
+    LeftMotor.rotateFor((360 * how_long) / circumference, vex::rotationUnits::deg, false );
+    RightMotor.rotateFor((360 * -how_long) / circumference, vex::rotationUnits::deg ); 
+  }
+void turnLeft(int cm) {
+  LeftMotor.rotateFor((360 * cm) / circumference, vex::rotationUnits::deg, false );
+  RightMotor.rotateFor((360 * cm) / circumference, vex::rotationUnits::deg );
+}
+
+void turnRight(int nath) {
+  LeftMotor.rotateFor((360 * -nath) / circumference, vex::rotationUnits::deg, false );
+  RightMotor.rotateFor((360 * -nath) / circumference, vex::rotationUnits::deg );
+}
+
+
+int main() {
+ // Print to the screen that the program has started.
+    Brain.Screen.print("test");
+
+    LeftMotor.setVelocity( 50, vex::velocityUnits::pct ); 
+    RightMotor.setVelocity( 50, vex::velocityUnits::pct );
+    ArmMotor.setVelocity( 70, vex::velocityUnits::pct ); 
+    vex::task::sleep(10);
+    // Goes forward
+    moveForward(38);
+    vex::task::sleep(10);
+    turnLeft(RIGHT_ANGLE);
+    vex::task::sleep(10);
+    moveForward(-70);
+    vex::task::sleep(10);
+    moveForward(80);
+    vex::task::sleep(10);
+    turnLeft(-RIGHT_ANGLE);
+    vex::task::sleep(10);
+    moveForward(-150);
+    vex::task::sleep(10);
+    moveForward(10);
+    vex::task::sleep(10);
+    turnLeft(66);
+    vex::task::sleep(10);
+    moveForward(60);
+    vex::task::sleep(10);
+  
+    LeftMotor.stop();
+    RightMotor.stop();
+    ArmMotor.stop();
+    // Print to the brain's screen that the program has ended.
+    Brain.Screen.newLine();
+    Brain.Screen.print( "R0B0T L1V35 M4TT3R!" );
+
+}
